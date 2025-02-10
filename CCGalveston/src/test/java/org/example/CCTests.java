@@ -1,8 +1,6 @@
-package test.java.org.example;
+package org.example;
 
 import org.junit.jupiter.api.*;
-
-import main.java.org.example.Geography;
 
 import static org.junit.jupiter.api.Assertions.*;
 
