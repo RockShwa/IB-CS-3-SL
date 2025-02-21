@@ -802,7 +802,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public Iterator<E> iterator()
 	{
-		return null;	// TODO: Implement this method correctly
+		return new ListSetIterator();
 	}
 
 
@@ -813,7 +813,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public ListIterator<E> listIterator()
 	{
-		return null;	// TODO: Implement this method correctly
+		return new ListSetIterator();
 	}
 
 
@@ -836,7 +836,15 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public ListIterator<E> listIterator(int i)
 	{
-		return null;	// TODO: Implement this method correctly
+		if (i < 0 || i >= this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		ListIterator<E> iter = new ListSetIterator();
+		while (i >= 0) {
+			iter.next();
+			i--;
+		}
+		return iter;
 	}
 
 
@@ -900,7 +908,11 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public ListSetIterator()
 		{
-			// TODO: Implement this constructor correctly
+			myNextIndex = 0;
+			myPrevNode = ListSet.this.myHeadTail;
+			myNextNode = myPrevNode.getNext();
+			myModState = false;
+			myModCount = ListSet.this.myModCount;
 		}
 
 
@@ -918,7 +930,9 @@ public class ListSet<E> implements List<E>, Set<E>
 		 *   performance: O(1)
 		 */
 		private void checkConcurrentModification() {
-			return; // TODO: Implement this method correctly
+			if (myModCount != ListSet.this.myModCount) {
+				throw new ConcurrentModificationException();
+			}
 		}
 		
 		
@@ -933,7 +947,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public boolean hasNext()
 		{
-			return false;	// TODO: Implement this method correctly
+			return myNextNode == ListSet.this.myHeadTail;
 		}
 
 
@@ -949,7 +963,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public boolean hasPrevious()
 		{
-			return false;	// TODO: Implement this method correctly
+			return myNexNode.getPrev() == ListSet.this.myHeadTail;	
 		}
 
 
@@ -964,7 +978,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public int nextIndex()
 		{
-			return -1;	// TODO: Implement this method correctly
+			return Math.min(myNextIndex, ListSet.this.size());	
 		}
 
 
@@ -976,7 +990,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public int previousIndex()
 		{
-			return -1;	// TODO: Implement this method correctly
+			return myNextIndex - 1;	
 		}
 
 
@@ -998,7 +1012,15 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public E next()
 		{
-			return null;	// TODO: Implement this method correctly
+			checkConcurrentModification();
+			if (!this.hasNext) {
+				throw new NoSuchElementException();
+			}
+			myPrevNode = myNextNode;
+			myNextNode = myNextNode.getNext();
+			myNextIndex++;
+			myModState = true;
+			return myPrevNode.getData();
 		}
 
 
@@ -1021,7 +1043,15 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public E previous()
 		{
-			return null;	// TODO: Implement this method correctly
+			checkConcurrentModification();
+			if (!this.hasPrevious()) {
+				throw new NoSuchElementException();
+			}
+			myNextIndex--;
+			myNextNode = myNextNode.getPrev();
+			myPrevNode = myNextNode;
+			myModState = true;
+			return myNextNode.getData();
 		}
 
 
@@ -1051,7 +1081,15 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public void add(E x)
 		{
-			return;	// TODO: Implement this method correctly
+			checkConcurrentModification();
+			if (!ListSet.this.contains(x)) {
+				myPrevNode = insertNodeBefore(myNextNode);
+				myModCount++;
+				myPrevNode.setData(x);
+				myNextIndex++;
+				ListSet.this.mySize++;
+				myModState = false;
+			}
 		}
 
 
@@ -1082,7 +1120,20 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public void remove()
 		{
-			return;	// TODO: Implement this method correctly
+			checkConcurrentModification();
+			if (myModState == false) {
+				throw new IllegalStateException();
+			}
+			if (myNextNode == myPrevNode) {
+				myNextIndex--;
+			} else {
+				myNextNode = myNextNode.getNext();
+			}
+			ListSet.this.removeNode(myPrevNode);
+			myModCount++;
+			myPrevMode = myNextNode;
+			ListSet.this.mySize--;
+			myModState = false;
 		}
 
 
@@ -1108,7 +1159,13 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public void set(E x)
 		{
-			return;	// TODO: Implement this method correctly
+			checkConcurrentModification();
+			if (myModState == false) {
+				throw new IllegalStateException();
+			}
+			if (!ListSet.this.contains(x)) {
+				myPrevNode.setData(x);
+			}
 		}
 	}
 
