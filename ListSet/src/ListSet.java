@@ -166,7 +166,10 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean isEmpty()
 	{
-		return false;	// TODO: Implement this method correctly
+		if (this.size() == 0) {
+			return true;
+		}
+		return false;
 	}
 
 
@@ -182,7 +185,10 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public E get(int i)
 	{
-		return null;	// TODO: Implement this method correctly
+		if(i < 0 || i >= this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		return getNode(i).getData();	
 	}
 
 
@@ -209,7 +215,21 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public int indexOf(Object x)
 	{
-		return -1;	// TODO: Implement this method correctly
+		int i = 0;
+		ListNode<E> n = myHeadTail.getNext();
+
+		// define the node's equivalencey as both the same data and referenced by the same object
+		while (!n.equals(myHeadTail)) {
+			if (!x.equals(null) && x.equals(n.getData())) {
+				return i;
+			}
+			if (x.equals(null) && x == n.getData()) {
+				return i;
+			}
+			n = n.getNext();
+			i++;
+		}
+		return -1;	
 	}
 
 
@@ -223,7 +243,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean contains(Object x)
 	{
-		return false;	// TODO: Implement this method correctly
+		return indexOf(x) > -1;	
 	}
 
 
@@ -251,7 +271,17 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public E set(int i, E x)
 	{
-		return null;	// TODO: Implement this method correctly
+		// no duplicates
+		if (this.contains(x)) {
+			throw new IllegalArgumentException();
+		}
+		if (i < 0 || i >= this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		ListNode<E> n = this.getNode(i);
+		E origVal = n.getData();
+		n.setData(x);
+		return origVal;	
 	}
 
 
@@ -280,7 +310,17 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public void add(int i, E x)
 	{
-		return;	// TODO: Implement this method correctly
+		if (this.contains(x)) {
+			throw new IllegalArgumentException();
+		}
+		if (i < 0 || i >= this.size) {
+			throw new IndexOutOfBoundsException();
+		}
+	
+		ListNode<E> n = this.getNode(i);
+		ListNode<E> addedNode = this.insertNodeBefore(n);
+		addedNode.setData(x);
+		mySize++;
 	}
 
 
@@ -303,7 +343,13 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean add(E x)
 	{
-		return false;	// TODO: Implement this method correctly
+		if (this.contains(x)) {
+			return false;
+		}
+		ListNode<E> addedNode = this.getNode(this.size() - 2); // one before myHeadTail
+		addedNode.setData(x);
+		mySize++;
+		return true;	
 	}
 
 
@@ -324,7 +370,13 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public E remove(int i)
 	{
-		return null;	// TODO: Implement this method correctly
+		if (i < 0 || i >= this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		ListNode<E> r = this.getNode(i);
+		this.remove(r);
+		mySize--;
+		return r.getData();
 	}
 
 
@@ -343,7 +395,12 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean remove(Object x)
 	{
-		return false;	// TODO: Implement this method correctly
+		int i = indexOf(x);
+		if (i == -1) {
+			return false;
+		}
+		this.remove(i);
+		return true;	
 	}
 
 
@@ -371,7 +428,19 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public String toString()
 	{
-		return "???";	// TODO: Implement this method correctly
+		String s = "[";
+		ListNode<E> n = myHeadTail.getNext();
+		while (n != myHeadTail) {
+			s += n.getData;
+
+			if (n.getNext() != myHeadTail) {
+				s += ", ";
+			}
+
+			n = n.getNext();
+			s += "]";
+		}
+		return s;	
 	}
 
 
@@ -382,27 +451,40 @@ public class ListSet<E> implements List<E>, Set<E>
 	 *     algorithm: If the size() of this list-set does not equal the 
 	 *                  size of that List...
 	 *                  ...return false.
-	 *                Declare a ListNode<E> variable called thisN and 
-	 *                  initialize it to the node referenced by myHeadTail of
-	 *                  this list-set.
-	 *                Declare a ListNode<E> variable called thatN and 
-	 *                  initialize it to the node referenced by myHeadTail of 
-	 *                  the parameter called that.
+	 *                Declare a ListNode<E> variable called thisN and assign to 
+	 *                  it the node referenced by the "next" pointer of this
+	 *                  list-set's myHeadTail.
+	 *                Declare a ListNode<E> variable called thatN and assign to 
+	 *                  it the node referenced by the "next" pointer of that
+	 *                  list-set's myHeadTail.
 	 *                While thisN does not equal myHeadTail...
-	 *                    ...assign to thisN the ListNode<E> that is referenced
-	 *                         by the "next" pointer of thisN.
-	 *                    ...assign to thatN the ListNode<E> that is referenced
-	 *                         by the "next" pointer of thatN.
 	 *                    ...if the "data" stored in thisN is not equivalent
 	 *                         to (i.e., using the equals() method) the "data"
 	 *                         stored in thatN...
 	 *                         ...return false
+	 *                    ...assign to thisN the ListNode<E> that is referenced
+	 *                         by the "next" pointer of thisN.
+	 *                    ...assign to thatN the ListNode<E> that is referenced
+	 *                         by the "next" pointer of thatN.
 	 *                Return true.
 	 *   performance: O(N)
 	 */
 	private boolean allItemsMatch(ListSet<E> that)
 	{
-		return false;	// TODO: Implement this method correctly
+		if (this.size() != that.size()) {
+			return false;
+		}
+		ListNode<E> thisN = myHeadTail.getNext();
+		ListNode<E> thatN = that.getNode(that.size() - 1).getNext();
+		
+		while (thisN != myHeadTail) {
+			if(!thisN.getData.equals(thatN.getData())) {
+				return false;
+			}
+			thisN = thisN.getNext();
+			thatN = thatN.getNext();
+		}
+		return true;
 	}
 
 
@@ -441,7 +523,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public int lastIndexOf(Object x)
 	{
-		return -1;	// TODO: Implement this method correctly
+		return indexOf(x);	
 	}
 
 
@@ -457,7 +539,12 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean containsAll(Collection<?> c)
 	{
-		return false;	// TODO: Implement this method correctly
+		for (E x : c) {
+			if (!this.contains(x)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 
@@ -491,7 +578,21 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean addAll(int i, Collection<? extends E> c)
 	{
-		return false;	// TODO: Implement this method correctly
+		if ( i < 0 || i >= this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		boolean wasModified = false;
+		ListNode<E> n = getNode(i);
+
+		for (E x : c) {
+			if(!this.contains(x)) {
+				ListNode<E> p = insertNodeBefore(n);
+				p.setData(x);
+				mySize++;
+				wasModified = true;
+			}
+		}
+		return wasModified;
 	}
 
 
@@ -509,11 +610,12 @@ public class ListSet<E> implements List<E>, Set<E>
 	 *                  position i of this list-set.
 	 *   performance: O(M), where N = this.size() and M = c.size()
 	 */
+	
 	public boolean addAll(Collection<? extends E> c)
 	{
-		return false;	// TODO: Implement this method correctly
+		int i = this.size();
+		return addAll(i, c);
 	}
-
 
 	/** precondition: Collection c contains items to be removed from this
 	 *                list-set. This list-set may or may not contain each
@@ -531,7 +633,13 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean removeAll(Collection<?> c)
 	{
-		return false;	// TODO: Implement this method correctly
+		boolean wasModified = false;
+		for (E x : x) {
+			if(this.remove(x)) {
+				wasModified = true;
+			}
+		}
+		return wasModified;	
 	}
 
 
@@ -555,7 +663,14 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean retainAll(Collection<?> c)
 	{
-		return false;	// TODO: Implement this method correctly
+		boolean wasModified = false;
+		for (int i = 0; i <= this.size() - 1; i++) {
+			if (!c.contains(i)) {
+				this.removeNode(i);
+				wasModified = true;
+			}
+		}
+		return wasModified;	
 	}
 
 
@@ -568,7 +683,9 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public void clear()
 	{
-		return;	// TODO: Implement this method correctly
+		while (!isEmpty()) {
+			remove(0);
+		}
 	}
 
 
@@ -601,7 +718,17 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public List<E> subList(int firstIndex, int lastIndex)
 	{
-		return null;	// TODO: Implement this method correctly
+		if (firstIndex < 0 || lastIndex > this.size() || firstIndex > lastIndex) {
+			throw new IndexOutOfBoundsException();
+		}
+		List<E> sub = new ListSet<>();
+		ListNode<E> n = this.getNode(firstIndex);
+		ListNode<E> stopHere = this.getNode(lastIndex);
+		while (n != stopHere) {
+			sub.add(n.getData());
+			n = n.getNext();
+		}
+		return sub;
 	}
 
 
@@ -628,7 +755,15 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public Object[] toArray()
 	{
-		return null;	// TODO: Implement this method correctly
+		Object[] arr = new arr[this.size()];
+		int i = 0;
+		ListNode<E> n = myHeadTail.getNext();
+		while (n != myHeadTail) {
+			arr[i] = n.getData();
+			n = n.getNext();
+			i++;
+		}
+		return arr;	
 	}
 
 
