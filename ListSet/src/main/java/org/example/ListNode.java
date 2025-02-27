@@ -1,3 +1,5 @@
+package org.example;
+
 public class ListNode<E>
 {
 	// FIELDS
@@ -30,5 +32,12 @@ public class ListNode<E>
 	// OVERRIDDEN METHODS
 	// ------------------------------------------------------------------------
 	public String toString() { return myData.toString(); }
+	
+	public boolean equals(ListNode<E> that) { 
+		if(this.getData().equals(that.getData())) {
+			return true;
+		}
+		return false;
+	}
 
 }

@@ -1,10 +1,8 @@
-package test.java.org.example;
+package org.example;
 
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import main.java.org.example.*;
 
 public class CCTests {
     Geography geo;

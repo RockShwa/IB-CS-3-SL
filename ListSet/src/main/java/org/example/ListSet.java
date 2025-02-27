@@ -1,3 +1,5 @@
+package org.example;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -75,7 +77,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		ListNode<E> p = n.getPrev();
 		ListNode<E> addedNode = new ListNode<E>(null, p, n);
 		p.setNext(addedNode);
-		n.setPrevious(addedNode);
+		n.setPrev(addedNode);
 		myModCount++;
 		return addedNode;
 	}
@@ -106,7 +108,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		n.setPrev(p);
 		r.setNext(null);
 		r.setPrev(null);
-		myModeCount++;
+		myModCount++;
 	}
 
 
@@ -129,7 +131,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 *                Return the ListNode<E> that is referenced by n.
 	 *   performance: O(N)
 	 */
-	private ListNode<E> getNode(int i)
+	public ListNode<E> getNode(int i)
 	{
 		if (i < -1 || i > mySize) {
 			throw new IndexOutOfBoundsException();
@@ -219,7 +221,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		ListNode<E> n = myHeadTail.getNext();
 
 		// define the node's equivalencey as both the same data and referenced by the same object
-		while (!n.equals(myHeadTail)) {
+		while (n != myHeadTail) {
 			if (!x.equals(null) && x.equals(n.getData())) {
 				return i;
 			}
@@ -313,7 +315,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		if (this.contains(x)) {
 			throw new IllegalArgumentException();
 		}
-		if (i < 0 || i >= this.size) {
+		if (i < 0 || i > this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
 	
@@ -431,15 +433,15 @@ public class ListSet<E> implements List<E>, Set<E>
 		String s = "[";
 		ListNode<E> n = myHeadTail.getNext();
 		while (n != myHeadTail) {
-			s += n.getData;
+			s += n.getData();
 
 			if (n.getNext() != myHeadTail) {
 				s += ", ";
 			}
 
 			n = n.getNext();
-			s += "]";
 		}
+		s += "]";
 		return s;	
 	}
 
@@ -478,7 +480,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		ListNode<E> thatN = that.getNode(that.size() - 1).getNext();
 		
 		while (thisN != myHeadTail) {
-			if(!thisN.getData.equals(thatN.getData())) {
+			if(!thisN.getData().equals(thatN.getData())) {
 				return false;
 			}
 			thisN = thisN.getNext();
@@ -539,7 +541,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean containsAll(Collection<?> c)
 	{
-		for (E x : c) {
+		for (Object x : c) {
 			if (!this.contains(x)) {
 				return false;
 			}
@@ -578,7 +580,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public boolean addAll(int i, Collection<? extends E> c)
 	{
-		if ( i < 0 || i >= this.size()) {
+		if ( i < 0 || i > this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
 		boolean wasModified = false;
@@ -634,7 +636,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	public boolean removeAll(Collection<?> c)
 	{
 		boolean wasModified = false;
-		for (E x : x) {
+		for (Object x : c) {
 			if(this.remove(x)) {
 				wasModified = true;
 			}
@@ -665,8 +667,8 @@ public class ListSet<E> implements List<E>, Set<E>
 	{
 		boolean wasModified = false;
 		for (int i = 0; i <= this.size() - 1; i++) {
-			if (!c.contains(i)) {
-				this.removeNode(i);
+			if (!c.contains(this.getNode(i))) {
+				this.remove(i);
 				wasModified = true;
 			}
 		}
@@ -755,7 +757,7 @@ public class ListSet<E> implements List<E>, Set<E>
 	 */
 	public Object[] toArray()
 	{
-		Object[] arr = new arr[this.size()];
+		Object[] arr = new Object[this.size()];
 		int i = 0;
 		ListNode<E> n = myHeadTail.getNext();
 		while (n != myHeadTail) {
@@ -963,7 +965,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		 */
 		public boolean hasPrevious()
 		{
-			return myNexNode.getPrev() == ListSet.this.myHeadTail;	
+			return myNextNode.getPrev() == ListSet.this.myHeadTail;	
 		}
 
 
@@ -1013,7 +1015,7 @@ public class ListSet<E> implements List<E>, Set<E>
 		public E next()
 		{
 			checkConcurrentModification();
-			if (!this.hasNext) {
+			if (!this.hasNext()) {
 				throw new NoSuchElementException();
 			}
 			myPrevNode = myNextNode;
@@ -1131,7 +1133,7 @@ public class ListSet<E> implements List<E>, Set<E>
 			}
 			ListSet.this.removeNode(myPrevNode);
 			myModCount++;
-			myPrevMode = myNextNode;
+			myPrevNode = myNextNode;
 			ListSet.this.mySize--;
 			myModState = false;
 		}
