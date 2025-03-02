@@ -13,3 +13,4 @@ plugins {
 rootProject.name = "IB-CS-3-SL"
 include("CCGalveston")
 include("ListSet")
+include("CCHouston")

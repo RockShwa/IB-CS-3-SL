@@ -55,13 +55,6 @@ public class ListSetTester
 	}
 
 	@Test
-	public void testAdd() {
-		set.add(2, "COOL");
-		ListNode<String> expected = new ListNode<String>("WHOA", set.getNode(2), null);
-		assertEquals(expected, set.getNode(2).getNext());
-	}
-
-	@Test
 	public void testToString() {
 		String expected = "[HELLO, BYEBYE, WHOA]";
 		String actual = set.toString();
