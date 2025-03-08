@@ -7,7 +7,7 @@ public class Houston {
     // example: "the crazy ones" key
     // each word gets a unique code based on its length and position in that alphabetized list
     // "the" would get a different code each time bc its position changes
-    // "the country is for all" -> key text
+    // "the country is for all" -> deciphered code
         // "the" appears 7 times in our key text
         // the is the first position word of the three letter group (code: 31)
         // country has 7 letters, and only 7 letter in the key text, so (code: 70)
