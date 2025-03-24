@@ -1,0 +1,7 @@
+Hello World I Love Programming
+Fear For World I Program Not To Die
+Hello Hear Me And My Cry
+3 test cases
+ADD Moose Drool
+REMOVE For Die
+MOVE 2 from 1 to 3
