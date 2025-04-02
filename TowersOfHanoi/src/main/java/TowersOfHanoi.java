@@ -16,6 +16,8 @@ public class TowersOfHanoi
 	private Stack<Disc> myPegA;	// 1st pillar of discs
 	private Stack<Disc> myPegB;	// 2nd pillar of discs
 	private Stack<Disc> myPegC;	// 3rd pillar of discs
+
+	private int counter = 0;
 	
 	
 	// CONSTRUCTORS
@@ -48,6 +50,7 @@ public class TowersOfHanoi
 	public void solvePuzzle()
 	{
 		// TODO: Implement this method correctly
+		moveTower(myPegA.size(), myPegA, myPegB, myPegC);
 	}
 	
 	
@@ -69,22 +72,20 @@ public class TowersOfHanoi
 	                              Stack<Disc> dest,
 	                              Stack<Disc> temp)
 	{
-		// TODO: Implement this method correctly
-        if (n == 0) {
+		// 3 steps:
+		// 1) move top tower to temp
+		// 2) move bottom disc to dest
+		// 3) move top tower to dest
+
+        if (n == 1) {
             moveDisc(source, dest);
             return;
         }    
-        // } else if (source.isEmpty() || temp.isEmpty()) {
-        //     moveDisc(source, dest);
-        // }
-        // this needs some work still
-        else if (n % 2 == 0) {
-            moveDisc(source, temp);
-        } else if (n % 2 == 1) {
-            moveDisc(dest, temp);
-            moveDisc(source, dest);
-        }
-        moveTower(n-1, source, dest, temp);
+       else {
+			moveTower(n - 1, source, temp, dest);
+			moveDisc(source, dest);
+			moveTower(n - 1, temp, dest, source);
+		}
 
 	}
 	
@@ -104,13 +105,14 @@ public class TowersOfHanoi
 	private void moveDisc(Stack<Disc> source, Stack<Disc> dest)
 	{
 		// TODO: Implement this method correctly
-        Disc topDisc = source.pop();
+        //Disc topDisc = source.pop();
         // int topDiscSize = Integer.parseInt(topDisc.toString().substring(1, topDisc.toString().length() - 1));
         // int destDiscSize = Integer.parseInt(dest.peek().toString().substring(1, dest.peek().toString().length() - 1));
         // if (topDiscSize < destDiscSize) {
         //     dest.push(topDisc);
         // }
         dest.push(source.pop());
+		counter++;
 	}
 	
 	
