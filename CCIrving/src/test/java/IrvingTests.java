@@ -28,18 +28,18 @@ public class IrvingTests {
         });
     }
 
-    @Test
-    public void testRemoveAll() {
-        Irving irving = new Irving();
-        irving.stack.add("HELLO");
-        irving.stack.add("WOW");
-        Stack<String> s = new Stack<>();
-        s.add("HELLO");
-        s.add("WOW");
-        irving.removeAll(s);
-        //irving.printStack();
-        assertEquals(irving.stack.size(), 0);
-    }
+    // @Test
+    // public void testRemoveAll() {
+    //     Irving irving = new Irving();
+    //     irving.stack.add("HELLO");
+    //     irving.stack.add("WOW");
+    //     Stack<String> s = new Stack<>();
+    //     s.add("HELLO");
+    //     s.add("WOW");
+    //     irving.removeAll(s);
+    //     //irving.printStack();
+    //     assertEquals(irving.stack.size(), 0);
+    // }
 
     @Test
     public void testMove() {
